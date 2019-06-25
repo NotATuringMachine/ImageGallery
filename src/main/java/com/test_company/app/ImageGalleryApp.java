@@ -113,10 +113,16 @@ public class ImageGalleryApp extends JFrame implements ItemListener{
 		menuBar.add(processMenu);
 		JMenuItem processMenuOriginal = new JMenuItem("Original Image");
 		JMenuItem processMenuGreyScale = new JMenuItem("Greyscale Image");
+		JMenuItem processMenuNegative = new JMenuItem("Negative Image");
 		JMenuItem processMenuSepia = new JMenuItem("Sepia Image");
+		JMenuItem processMenuBoxBlur = new JMenuItem("Blurred Image (Box Blur)");
+		JMenuItem processMenuGaussianBlur = new JMenuItem("Blurred Image (Gaussian Blur)");
 		processMenu.add(processMenuOriginal);
 		processMenu.add(processMenuGreyScale);
+		processMenu.add(processMenuNegative);
 		processMenu.add(processMenuSepia);
+		processMenu.add(processMenuBoxBlur);
+		processMenu.add(processMenuGaussianBlur);
 
 		processMenuOriginal.addActionListener(
 			new ActionListener() {
@@ -133,12 +139,39 @@ public class ImageGalleryApp extends JFrame implements ItemListener{
 					setImage(current_image.getTransformedImage());
 				}
 			});
+
+		processMenuNegative.addActionListener(
+			new ActionListener() {
+				public void actionPerformed(ActionEvent e){
+					GalleryImage current_image = images.get(current_image_index);
+					current_image.applyRGBtoNegative();
+					setImage(current_image.getTransformedImage());
+				}
+			});
 		
 		processMenuSepia.addActionListener(
 			new ActionListener() {
 				public void actionPerformed(ActionEvent e){
 					GalleryImage current_image = images.get(current_image_index);
 					current_image.applyRGBtoSepia();
+					setImage(current_image.getTransformedImage());
+				}
+			});
+
+		processMenuBoxBlur.addActionListener(
+			new ActionListener() {
+				public void actionPerformed(ActionEvent e){
+					GalleryImage current_image = images.get(current_image_index);
+					current_image.applyBoxBlur();
+					setImage(current_image.getTransformedImage());
+				}
+			});
+
+		processMenuGaussianBlur.addActionListener(
+			new ActionListener() {
+				public void actionPerformed(ActionEvent e){
+					GalleryImage current_image = images.get(current_image_index);
+					current_image.applyGaussianBlur();
 					setImage(current_image.getTransformedImage());
 				}
 			});
