@@ -7,6 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Class for UI component of the application
+ */
 public class ImageProcessorApp extends JFrame {
 
     private ArrayList<ImageHolder> images; //Holds all the images currently in the application

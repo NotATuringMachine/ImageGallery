@@ -13,6 +13,7 @@ public class RunApplication implements Runnable{
     }
 
     public static void main(String args[]){
+        // Start swing in different thread to the main thread
         SwingUtilities.invokeLater( new RunApplication());
     }
 }

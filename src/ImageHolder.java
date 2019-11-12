@@ -1,12 +1,11 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Class to hold the original image loaded in by the user and apply filters to the image
+ */
 public class ImageHolder {
     private BufferedImage original_image; //store the original image
-
-    public ImageHolder(){
-
-    }
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
