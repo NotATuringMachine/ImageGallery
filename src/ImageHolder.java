@@ -149,12 +149,7 @@ public class ImageHolder {
      * @return quantized RGB value
      */
     private int quantizeRGBValue (int n) {
-        if (n <= 127){
-            n = 0;
-        } else {
-            n = 255;
-        }
-        /*if (n < 85) {
+        if (n < 85) {
             n = 0;
         } else if (n < 170) {
             n = 85;
@@ -162,12 +157,14 @@ public class ImageHolder {
             n = 170;
         } else {
             n = 255;
-        }*/
+        }
         return n;
     }
 
     /**
      *  Increase the contrast of the image
+     *  Contrast is increased by calculating the average value of each pixel and increasing its brightness if
+     *  above a certain threshold (127) and decreasing it if it is below
      * @return contrast enhanced Image
      */
     public BufferedImage applyContrastEnhancement(){
@@ -220,7 +217,7 @@ public class ImageHolder {
      * Converts the image into a black and white image
      * @return black and white image
      */
-    public BufferedImage thresholdImage(){
+    public BufferedImage thresholdImage() {
         BufferedImage transformed_image = new BufferedImage(
                 original_image.getWidth(),
                 original_image.getHeight(),
@@ -246,6 +243,49 @@ public class ImageHolder {
                 transformed_image.setRGB(x, y, c.getRGB());
             }
         }
+        return transformed_image;
+    }
+
+    /**
+     * Applies a box blur to the original image. Uses a kernel size of 5
+     * @return blurred image
+     */
+    public BufferedImage applyBoxBlur() {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+        int kernel_size = 5;
+        //Kernel rgb sums used to calculate average value of the kernel
+        int kernel_sum_red;
+        int kernel_sum_green;
+        int kernel_sum_blue;
+        for ( int x = 0; x < original_image.getWidth(); x++ ) {
+            for ( int y = 0; y < original_image.getHeight(); y++ ) {
+                kernel_sum_red = 0;
+                kernel_sum_green = 0;
+                kernel_sum_blue = 0;
+                for (int kernel_x = x - (kernel_size - 1)/2; kernel_x <= x + (kernel_size - 1)/2; kernel_x++ ) {
+                    for (int kernel_y = y - (kernel_size - 1)/2; kernel_y <= y + (kernel_size - 1)/2; kernel_y++ ) {
+
+                        //Check kernel coordinate bounds
+                        if (kernel_x >= 0 && kernel_x < original_image.getWidth() && kernel_y >= 0 && kernel_y < original_image.getHeight()) {
+                            c = new Color ( original_image.getRGB(kernel_x, kernel_y) );
+                            kernel_sum_red += c.getRed();
+                            kernel_sum_green += c.getGreen();
+                            kernel_sum_blue += c.getBlue();
+                        }
+                    }
+                }
+
+                c = new Color(kernel_sum_red/(kernel_size*kernel_size),
+                              kernel_sum_green/(kernel_size*kernel_size),
+                              kernel_sum_blue/(kernel_size*kernel_size));
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+
         return transformed_image;
     }
 }

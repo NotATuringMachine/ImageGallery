@@ -5,4 +5,3 @@ Filters supported include:
 - Sepia
 - Negative
 - Box blur
-- Gaussian Blur
