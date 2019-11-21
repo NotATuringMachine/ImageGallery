@@ -115,7 +115,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_threshold = new JMenuItem("Threshold Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
         JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
-        JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Endge Detection");
+        JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Edge Detection");
 
         // Add JMenuItems to drop down menu
         process_menu.add(process_menu_original);
