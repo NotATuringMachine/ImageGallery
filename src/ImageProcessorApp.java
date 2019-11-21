@@ -116,6 +116,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
         JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
         JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Edge Detection");
+        JMenuItem process_menu_blurredSobel = new JMenuItem("Sobel Edge Detection (Pre-blurred)");
 
         // Add JMenuItems to drop down menu
         process_menu.add(process_menu_original);
@@ -128,6 +129,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_boxBlur);
         process_menu.add(process_menu_gaussianBlur);
         process_menu.add(process_menu_sobelEdge);
+        process_menu.add(process_menu_blurredSobel);
 
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
@@ -187,6 +189,12 @@ public class ImageProcessorApp extends JFrame {
         process_menu_sobelEdge.addActionListener(
                 e -> {
                     setDisplayImage(images.get(current_image_index).applySobelOperator());
+                }
+        );
+
+        process_menu_blurredSobel.addActionListener(
+                e -> {
+                    setDisplayImage(images.get(current_image_index).applyPreblurredSobelOperator());
                 }
         );
     }

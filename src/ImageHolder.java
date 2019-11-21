@@ -19,6 +19,7 @@ public class ImageHolder {
     private BufferedImage box_blur_image;
     private BufferedImage gaussian_blur_image;
     private BufferedImage sobel_image;
+    private BufferedImage preblurred_sobel_image;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -149,6 +150,27 @@ public class ImageHolder {
         }
         BufferedImage transformed_image = image_processor.applySobelOperator(original_image);
         sobel_image = transformed_image;
+        return transformed_image;
+    }
+
+    /**
+     * Applies a gaussian blur filter to the original image before applying sobel to
+     * reduce noise in the image
+     * @return blurred-edge-detected image
+     */
+    public BufferedImage applyPreblurredSobelOperator() {
+        if (preblurred_sobel_image != null) {
+            return preblurred_sobel_image;
+        }
+        BufferedImage blurred_image;
+        if (gaussian_blur_image != null) {
+            blurred_image = gaussian_blur_image;
+        } else {
+            blurred_image = image_processor.applyGaussianBlur(original_image);
+            gaussian_blur_image = blurred_image;
+        }
+        BufferedImage transformed_image = image_processor.applySobelOperator(blurred_image);
+        preblurred_sobel_image = transformed_image;
         return transformed_image;
     }
 }
