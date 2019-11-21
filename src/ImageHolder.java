@@ -1,11 +1,13 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 
 /**
  * Class to hold the original image loaded in by the user and apply filters to the image
  */
 public class ImageHolder {
     private BufferedImage original_image; //store the original image
+    private BufferedImage greyscale_image;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -23,6 +25,9 @@ public class ImageHolder {
      * @return greyscale image
      */
     public BufferedImage applyGreyscaleFilter(){
+        if (greyscale_image != null) {
+            return greyscale_image;
+        }
         BufferedImage transformed_image = new BufferedImage(
                 original_image.getWidth(),
                 original_image.getHeight(),
@@ -45,6 +50,7 @@ public class ImageHolder {
                 transformed_image.setRGB(x, y, c.getRGB());
             }
         }
+        greyscale_image = transformed_image;
         return transformed_image;
     }
 
@@ -235,7 +241,7 @@ public class ImageHolder {
                 green_val = c.getGreen();
                 blue_val = c.getBlue();
                 greyscale_val = (int)(red_val * 0.3 + green_val * 0.6 + blue_val * 0.1);
-                if (greyscale_val >= 127){
+                if (greyscale_val >= 127) {
                     greyscale_val = 255;
                 } else {
                     greyscale_val = 0;
@@ -337,5 +343,69 @@ public class ImageHolder {
             }
         }
         return transformed_image;
+    }
+
+    /**
+     * Applies the Sobel operator to the original image for edge detection
+     * @return edge-detected image
+     */
+    public BufferedImage applySobelOperator() {
+        BufferedImage greyscale_image = this.applyGreyscaleFilter();
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+
+        int[][] sobel_kernel_x = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+        int[][] sobel_kernel_y = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+        int kernel_size = 3;
+        int kernel_sum_x = 0;
+        int kernel_sum_y = 0;
+        //Kernel position on the image
+        int kernel_x;
+        int kernel_y;
+        int final_pixel_value;
+        for (int x = 0; x < greyscale_image.getWidth(); x++) {
+            for (int y = 0; y < greyscale_image.getHeight(); y++) {
+                kernel_sum_x = 0;
+                kernel_sum_y = 0;
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        kernel_x = x - (kernel_size - 1)/2 + i;
+                        kernel_y = y - (kernel_size - 1)/2 + j;
+
+                        if (kernel_x >= 0 && kernel_x < greyscale_image.getWidth() && kernel_y >= 0 && kernel_y < greyscale_image.getHeight()) {
+                            c = new Color ( greyscale_image.getRGB(kernel_x, kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            kernel_sum_x += sobel_kernel_x[i][j] * c.getRed();
+                            kernel_sum_y += sobel_kernel_y[i][j] * c.getRed();
+                        }
+                    }
+                }
+                //kernel_sum_x = map(kernel_sum_x);
+                //kernel_sum_y = map(kernel_sum_y);
+                final_pixel_value = (int) (Math.sqrt(kernel_sum_x * kernel_sum_x + kernel_sum_y * kernel_sum_y));
+                final_pixel_value = map(final_pixel_value);
+                c = new Color(final_pixel_value, final_pixel_value, final_pixel_value);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+        return transformed_image;
+    }
+
+    /**
+     * Maps a value is in the range 0 - 255
+     * @param n number to be mapped
+     * @return number in [0, 255]
+     */
+    private int map(int n){
+        if (n > 255) {
+            n = 255;
+        }else if (n < 0) {
+            n = 0;
+        }
+        return n;
     }
 }
