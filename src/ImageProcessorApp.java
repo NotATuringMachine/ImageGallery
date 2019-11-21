@@ -114,6 +114,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_false = new JMenuItem("Increase Contrast");
         JMenuItem process_menu_threshold = new JMenuItem("Threshold Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
+        JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
 
         // Add JMenuItems to drop down menu
         process_menu.add(process_menu_original);
@@ -124,6 +125,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_false);
         process_menu.add(process_menu_threshold);
         process_menu.add(process_menu_boxBlur);
+        process_menu.add(process_menu_gaussianBlur);
 
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
@@ -171,6 +173,12 @@ public class ImageProcessorApp extends JFrame {
         process_menu_boxBlur.addActionListener(
                 e -> {
                     setDisplayImage(images.get(current_image_index).applyBoxBlur());
+                }
+        );
+
+        process_menu_gaussianBlur.addActionListener(
+                e -> {
+                    setDisplayImage(images.get(current_image_index).applyGaussianBlur());
                 }
         );
     }

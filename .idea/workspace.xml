@@ -8,7 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7d963693-e88c-407a-8cc8-3199c8555008" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ImageHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImageHolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ImageProcessorApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImageProcessorApp.java" afterDir="false" />
     </list>

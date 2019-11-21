@@ -76,7 +76,7 @@ public class ImageHolder {
     }
 
     /**
-     *  Applies a sepia filter to the original image
+     * Applies a sepia filter to the original image
      * @return sepia image
      */
     public BufferedImage applySepiaFilter(){
@@ -162,9 +162,9 @@ public class ImageHolder {
     }
 
     /**
-     *  Increase the contrast of the image
-     *  Contrast is increased by calculating the average value of each pixel and increasing its brightness if
-     *  above a certain threshold (127) and decreasing it if it is below
+     * Increase the contrast of the image
+     * Contrast is increased by calculating the average value of each pixel and increasing its brightness if
+     * above a certain threshold (127) and decreasing it if it is below
      * @return contrast enhanced Image
      */
     public BufferedImage applyContrastEnhancement(){
@@ -185,6 +185,7 @@ public class ImageHolder {
                 blue_val = c.getBlue();
                 average_val = (red_val + green_val + blue_val)/3;
 
+                //Check threshold value and increase/decrease pixel brightness accordingly
                 if (average_val > 127){
                     red_val = red_val + 50;
                     if (red_val > 255)
@@ -227,8 +228,8 @@ public class ImageHolder {
         int blue_val;
         int greyscale_val;
         Color c;
-        for (int x = 0; x < original_image.getWidth(); x++){
-            for (int y = 0; y < original_image.getHeight(); y++){
+        for (int x = 0; x < original_image.getWidth(); x++) {
+            for (int y = 0; y < original_image.getHeight(); y++) {
                 c = new Color(original_image.getRGB(x, y));
                 red_val = c.getRed();
                 green_val = c.getGreen();
@@ -248,7 +249,7 @@ public class ImageHolder {
 
     /**
      * Applies a box blur to the original image. Uses a kernel size of 5
-     * @return blurred image
+     * @return box blurred image
      */
     public BufferedImage applyBoxBlur() {
         BufferedImage transformed_image = new BufferedImage(
@@ -286,6 +287,55 @@ public class ImageHolder {
             }
         }
 
+        return transformed_image;
+    }
+
+    /**
+     * Applies a gaussian blur to the original image.
+     * @return gaussian blurred image
+     */
+    public BufferedImage applyGaussianBlur() {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+        int kernel_size = 5; //Kernel size must be odd
+        int gaussian_factor = 256; // value to divide gaussian kernel by
+        int[][] gaussian_kernel = { {1, 4, 6, 4, 1}, {4, 16, 24, 16, 4}, {6, 24, 36, 24, 6}, {4, 16, 24, 16, 4}, {1, 4, 6, 4, 1} };
+        //Kernel rgb sums used to calculate new pixel values
+        int kernel_sum_red;
+        int kernel_sum_green;
+        int kernel_sum_blue;
+
+        //Kernel position on the image
+        int kernel_x;
+        int kernel_y;
+        for (int x = 0; x < original_image.getWidth(); x++ ) {
+            for (int y = 0; y < original_image.getHeight(); y++) {
+                //Initialize sums
+                kernel_sum_red = 0;
+                kernel_sum_green = 0;
+                kernel_sum_blue = 0;
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        kernel_x = x - (kernel_size - 1)/2 + i;
+                        kernel_y = y - (kernel_size - 1)/2 + j;
+                        if (kernel_x >= 0 && kernel_x < original_image.getWidth() && kernel_y >= 0 && kernel_y < original_image.getHeight()) {
+                            c = new Color ( original_image.getRGB(kernel_x, kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            kernel_sum_red += gaussian_kernel[i][j] * c.getRed();
+                            kernel_sum_green += gaussian_kernel[i][j] * c.getGreen();
+                            kernel_sum_blue += gaussian_kernel[i][j] * c.getBlue();
+                        }
+                    }
+                }
+                c = new Color(kernel_sum_red/(gaussian_factor),
+                              kernel_sum_green/(gaussian_factor),
+                              kernel_sum_blue/(gaussian_factor));
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
         return transformed_image;
     }
 }
