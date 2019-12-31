@@ -418,7 +418,7 @@ public class ImageProcessor {
                 original_image.getHeight(),
                 original_image.getType());
         Color c;
-        int kernel_size = 3; //Kernel size should always be an odd number
+        int kernel_size = 5; //Kernel size should always be an odd number
         int current_pixel_in_kernel_x;
         int current_pixel_in_kernel_y;
 

@@ -65,9 +65,17 @@ public class ImageProcessorApp extends JFrame {
                             ImageHolder image = new ImageHolder(buff_image);
                             images.add(image);
                             current_image_index = images.size() - 1;
+
+                            //Check if image is loaded into application properly
+                            //else remove object from list and throw new IOException
+                            if (image.getOriginalImage() == null) {
+                                images.remove(image);
+                                throw new IOException();
+                            }
                             setDisplayImage(image.getOriginalImage());
                         } catch ( IOException err){
-                            err.printStackTrace();
+                            JOptionPane.showMessageDialog(this, "There was a problem reading your image. Please" +
+                                    " try again or use a different image.");
                         }
                     }
                 }
