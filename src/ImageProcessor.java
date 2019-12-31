@@ -352,12 +352,14 @@ public class ImageProcessor {
         int[][] sobel_kernel_x = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
         int[][] sobel_kernel_y = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
         int kernel_size = 3;
+        //Kernel sums
         int kernel_sum_x = 0;
         int kernel_sum_y = 0;
-        //Kernel position on the image
-        int kernel_x;
-        int kernel_y;
+        //Current pixel in the kernel
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
         int final_pixel_value;
+
         for (int x = 0; x < greyscale_image.getWidth(); x++) {
             for (int y = 0; y < greyscale_image.getHeight(); y++) {
                 kernel_sum_x = 0;
@@ -365,11 +367,16 @@ public class ImageProcessor {
 
                 for (int i = 0; i < kernel_size; i++) {
                     for (int j = 0; j < kernel_size; j++) {
-                        kernel_x = x - (kernel_size - 1)/2 + i;
-                        kernel_y = y - (kernel_size - 1)/2 + j;
+                        //Change current pixel's coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
 
-                        if (kernel_x >= 0 && kernel_x < greyscale_image.getWidth() && kernel_y >= 0 && kernel_y < greyscale_image.getHeight()) {
-                            c = new Color ( greyscale_image.getRGB(kernel_x, kernel_y) );
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < greyscale_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < greyscale_image.getHeight()) {
+
+                            //Get pixel's greyscale value
+                            c = new Color ( greyscale_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
                             //Add weighted pixel values to running kernel sums
                             kernel_sum_x += sobel_kernel_x[i][j] * c.getRed();
                             kernel_sum_y += sobel_kernel_y[i][j] * c.getRed();
@@ -377,7 +384,8 @@ public class ImageProcessor {
                     }
                 }
                 final_pixel_value = (int) (Math.sqrt(kernel_sum_x * kernel_sum_x + kernel_sum_y * kernel_sum_y));
-                final_pixel_value = map(final_pixel_value);
+                final_pixel_value = map(final_pixel_value); // Ensure the pixel value is in the range [0 -255]
+
                 c = new Color(final_pixel_value, final_pixel_value, final_pixel_value);
                 transformed_image.setRGB(x, y, c.getRGB());
             }
@@ -386,7 +394,7 @@ public class ImageProcessor {
     }
 
     /**
-     * Maps a value is in the range 0 - 255
+     * Ensures an integer is in the range 0 - 255
      * @param n number to be mapped
      * @return number in [0, 255]
      */
@@ -397,5 +405,45 @@ public class ImageProcessor {
             n = 0;
         }
         return n;
+    }
+
+    /**
+     * Pixelates an image by setting all the pixels in the kernel to the same RGB value
+     * @param original_image
+     * @return
+     */
+    public BufferedImage pixelate(BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+        int kernel_size = 3; //Kernel size should always be an odd number
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
+
+        for ( int x = (kernel_size - 1)/2 ; x < original_image.getWidth() - (kernel_size - 1)/2; x += kernel_size) {
+            for ( int y = (kernel_size - 1)/2; y < original_image.getHeight() - (kernel_size - 1)/2; y += kernel_size) {
+
+                c = new Color( original_image.getRGB(x, y));
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        //Change current pixel's coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1) / 2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1) / 2 + j;
+
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < original_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < original_image.getHeight()) {
+
+                            transformed_image.setRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y, c.getRGB());
+                        }
+                    }
+                }
+            }
+        }
+
+        return transformed_image;
     }
 }

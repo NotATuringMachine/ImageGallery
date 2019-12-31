@@ -20,6 +20,7 @@ public class ImageHolder {
     private BufferedImage gaussian_blur_image;
     private BufferedImage sobel_image;
     private BufferedImage preblurred_sobel_image;
+    private BufferedImage pixelated_image;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -38,12 +39,11 @@ public class ImageHolder {
      * @return greyscale image
      */
     public BufferedImage applyGreyscaleFilter(){
-        if (greyscale_image != null) {
+        if (greyscale_image != null)
             return greyscale_image;
-        }
-        BufferedImage transformed_image = image_processor.applyGreyscaleFilter(original_image);
-        greyscale_image = transformed_image;
-        return transformed_image;
+
+        greyscale_image = image_processor.applyGreyscaleFilter(original_image);
+        return greyscale_image;
     }
 
     /**
@@ -52,12 +52,11 @@ public class ImageHolder {
      * @return negative
      */
     public BufferedImage applyNegativeFilter(){
-        if (negative_image != null) {
+        if (negative_image != null)
             return negative_image;
-        }
-        BufferedImage transformed_image = image_processor.applyNegativeFilter(original_image);
-        negative_image = transformed_image;
-        return transformed_image;
+
+        negative_image = image_processor.applyNegativeFilter(original_image);
+        return negative_image;
     }
 
     /**
@@ -65,12 +64,11 @@ public class ImageHolder {
      * @return sepia image
      */
     public BufferedImage applySepiaFilter() {
-        if (sepia_image != null) {
+        if (sepia_image != null)
             return sepia_image;
-        }
-        BufferedImage transformed_image = image_processor.applySepiaFilter(original_image);
-        sepia_image = transformed_image;
-        return transformed_image;
+
+        sepia_image = image_processor.applySepiaFilter(original_image);
+        return sepia_image;
     }
 
     /**
@@ -78,12 +76,11 @@ public class ImageHolder {
      * @return cartoon-esque image
      */
     public BufferedImage applyCartoonFilter() {
-        if (cartoon_image != null) {
+        if (cartoon_image != null)
             return cartoon_image;
-        }
-        BufferedImage transformed_image = image_processor.applyCartoonFilter(original_image);
-        cartoon_image = transformed_image;
-        return transformed_image;
+
+        cartoon_image = image_processor.applyCartoonFilter(original_image);
+        return cartoon_image;
     }
 
     /**
@@ -93,12 +90,11 @@ public class ImageHolder {
      * @return contrast enhanced Image
      */
     public BufferedImage applyContrastEnhancement(){
-        if (contrast_enhanced_image != null) {
+        if (contrast_enhanced_image != null)
             return contrast_enhanced_image;
-        }
-        BufferedImage transformed_image = image_processor.applyContrastEnhancement(original_image);
-        contrast_enhanced_image = transformed_image;
-        return transformed_image;
+
+        contrast_enhanced_image = image_processor.applyContrastEnhancement(original_image);;
+        return contrast_enhanced_image;
     }
 
     /**
@@ -106,12 +102,11 @@ public class ImageHolder {
      * @return black and white image
      */
     public BufferedImage thresholdImage() {
-        if (threshold_image != null) {
+        if (threshold_image != null)
             return threshold_image;
-        }
-        BufferedImage transformed_image = image_processor.thresholdImage(original_image);
-        threshold_image = transformed_image;
-        return transformed_image;
+
+        threshold_image = image_processor.thresholdImage(original_image);
+        return threshold_image;
     }
 
     /**
@@ -119,12 +114,11 @@ public class ImageHolder {
      * @return box blurred image
      */
     public BufferedImage applyBoxBlur() {
-        if (box_blur_image != null) {
+        if (box_blur_image != null)
             return box_blur_image;
-        }
-        BufferedImage transformed_image = image_processor.applyBoxBlur(original_image);
-        box_blur_image = transformed_image;
-        return transformed_image;
+
+        box_blur_image = image_processor.applyBoxBlur(original_image);;
+        return box_blur_image;
     }
 
     /**
@@ -132,12 +126,11 @@ public class ImageHolder {
      * @return gaussian blurred image
      */
     public BufferedImage applyGaussianBlur() {
-        if (gaussian_blur_image != null) {
+        if (gaussian_blur_image != null)
             return gaussian_blur_image;
-        }
-        BufferedImage transformed_image = image_processor.applyGaussianBlur(original_image);
-        gaussian_blur_image = transformed_image;
-        return transformed_image;
+
+        gaussian_blur_image = image_processor.applyGaussianBlur(original_image);
+        return gaussian_blur_image;
     }
 
     /**
@@ -145,12 +138,11 @@ public class ImageHolder {
      * @return edge-detected image
      */
     public BufferedImage applySobelOperator() {
-        if (sobel_image != null) {
+        if (sobel_image != null)
             return sobel_image;
-        }
-        BufferedImage transformed_image = image_processor.applySobelOperator(original_image);
-        sobel_image = transformed_image;
-        return transformed_image;
+
+        sobel_image = image_processor.applySobelOperator(original_image);
+        return sobel_image;
     }
 
     /**
@@ -159,18 +151,22 @@ public class ImageHolder {
      * @return blurred-edge-detected image
      */
     public BufferedImage applyPreblurredSobelOperator() {
-        if (preblurred_sobel_image != null) {
+        if (preblurred_sobel_image != null)
             return preblurred_sobel_image;
-        }
-        BufferedImage blurred_image;
-        if (gaussian_blur_image != null) {
-            blurred_image = gaussian_blur_image;
-        } else {
-            blurred_image = image_processor.applyGaussianBlur(original_image);
-            gaussian_blur_image = blurred_image;
-        }
-        BufferedImage transformed_image = image_processor.applySobelOperator(blurred_image);
-        preblurred_sobel_image = transformed_image;
-        return transformed_image;
+
+        if (gaussian_blur_image == null)
+            gaussian_blur_image = image_processor.applyGaussianBlur(original_image);
+
+        preblurred_sobel_image = image_processor.applySobelOperator(gaussian_blur_image);
+
+        return preblurred_sobel_image;
+    }
+
+    public BufferedImage pixelate() {
+        if (pixelated_image != null)
+                return pixelated_image;
+
+        pixelated_image = image_processor.pixelate(original_image);
+        return pixelated_image;
     }
 }
