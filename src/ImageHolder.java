@@ -162,6 +162,10 @@ public class ImageHolder {
         return preblurred_sobel_image;
     }
 
+    /**
+     * Pixelates an image
+     * @return pixelated image
+     */
     public BufferedImage pixelate() {
         if (pixelated_image != null)
                 return pixelated_image;
