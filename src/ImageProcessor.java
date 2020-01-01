@@ -446,4 +446,67 @@ public class ImageProcessor {
 
         return transformed_image;
     }
+
+    /**
+     * Sharpens the original image
+     * @param original_image image to be sharpened
+     * @return sharpened Image
+     */
+    public BufferedImage sharpen(BufferedImage original_image){
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+        int[][] sharpen_kernel = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
+        int kernel_size = 3;
+        //Running sum in the kernel
+        int red_value;
+        int green_value;
+        int blue_value;
+        int new_red_value;
+        int new_green_value;
+        int new_blue_value;
+
+        //Current pixel in the kernel
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
+        int final_pixel_value;
+
+        for (int x = 0; x < original_image.getWidth(); x++) {
+            for (int y = 0; y < original_image.getHeight(); y++) {
+                new_red_value = 0;
+                new_green_value = 0;
+                new_blue_value = 0;
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        //Change current pixel's coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
+
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < original_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < original_image.getHeight()) {
+
+                            //Get pixel's greyscale value
+                            c = new Color ( original_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            new_red_value += sharpen_kernel[i][j] * c.getRed();
+                            new_green_value += sharpen_kernel[i][j] * c.getGreen();
+                            new_blue_value += sharpen_kernel[i][j] * c.getBlue();
+                        }
+                    }
+                }
+                // Ensure the pixels RGB values are in the range [0 -255]
+                new_red_value = map(new_red_value);
+                new_green_value = map(new_green_value);
+                new_blue_value = map(new_blue_value);
+
+                c = new Color(new_red_value, new_green_value, new_blue_value);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+        return transformed_image;
+    }
 }

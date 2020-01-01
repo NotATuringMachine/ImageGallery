@@ -21,6 +21,7 @@ public class ImageHolder {
     private BufferedImage sobel_image;
     private BufferedImage preblurred_sobel_image;
     private BufferedImage pixelated_image;
+    private BufferedImage sharpened_image;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -172,5 +173,13 @@ public class ImageHolder {
 
         pixelated_image = image_processor.pixelate(original_image);
         return pixelated_image;
+    }
+
+    public BufferedImage sharpen() {
+        if (sharpened_image != null)
+            return sharpened_image;
+
+        sharpened_image = image_processor.sharpen(original_image);
+        return sharpened_image;
     }
 }

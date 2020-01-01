@@ -70,6 +70,7 @@ public class ImageProcessorApp extends JFrame {
                             //else remove object from list and throw new IOException
                             if (image.getOriginalImage() == null) {
                                 images.remove(image);
+                                current_image_index = images.size() - 1;
                                 throw new IOException();
                             }
                             setDisplayImage(image.getOriginalImage());
@@ -126,6 +127,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Edge Detection");
         JMenuItem process_menu_blurredSobel = new JMenuItem("Sobel Edge Detection (Pre-blurred)");
         JMenuItem process_menu_pixelate = new JMenuItem("Pixelate");
+        JMenuItem process_menu_sharpen = new JMenuItem("Sharpen");
 
         // Add JMenuItems to drop down menu
         process_menu.add(process_menu_original);
@@ -140,6 +142,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_sobelEdge);
         process_menu.add(process_menu_blurredSobel);
         process_menu.add(process_menu_pixelate);
+        process_menu.add(process_menu_sharpen);
 
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
@@ -211,6 +214,12 @@ public class ImageProcessorApp extends JFrame {
         process_menu_pixelate.addActionListener(
                 e -> {
                     setDisplayImage(images.get(current_image_index).pixelate());
+                }
+        );
+
+        process_menu_sharpen.addActionListener(
+                e -> {
+                    setDisplayImage(images.get(current_image_index).sharpen());
                 }
         );
     }
