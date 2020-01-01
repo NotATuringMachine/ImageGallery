@@ -175,6 +175,10 @@ public class ImageHolder {
         return pixelated_image;
     }
 
+    /**
+     * Sharpens the original image
+     * @return sharpened image
+     */
     public BufferedImage sharpen() {
         if (sharpened_image != null)
             return sharpened_image;
