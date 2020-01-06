@@ -21,6 +21,7 @@ public class ImageHolder {
     private BufferedImage prewitt_image;
     private BufferedImage sobel_image;
     private BufferedImage preblurred_sobel_image;
+    private BufferedImage inverted_sobel_image;
     private BufferedImage pixelated_image;
     private BufferedImage sharpened_image;
 
@@ -170,6 +171,22 @@ public class ImageHolder {
         preblurred_sobel_image = image_processor.applySobelOperator(gaussian_blur_image);
 
         return preblurred_sobel_image;
+    }
+
+    /**
+     * Inverts the RGB values of an image after applying a sobel operator
+     * @return inverted-sobel-image
+     */
+    public BufferedImage applyInvertedSobel(){
+        if (inverted_sobel_image != null)
+            return inverted_sobel_image;
+
+        if (sobel_image == null)
+            sobel_image = image_processor.applySobelOperator(original_image);
+
+        inverted_sobel_image = image_processor.applyNegativeFilter(sobel_image);
+
+        return inverted_sobel_image;
     }
 
     /**

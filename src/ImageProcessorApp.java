@@ -127,6 +127,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_prewitt = new JMenuItem("Prewitt Edge Detection");
         JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Edge Detection");
         JMenuItem process_menu_blurredSobel = new JMenuItem("Sobel Edge Detection (Pre-blurred)");
+        JMenuItem process_menu_inverted_sobel = new JMenuItem("Sobel Edge Detection (Post-Inverted)");
         JMenuItem process_menu_pixelate = new JMenuItem("Pixelate");
         JMenuItem process_menu_sharpen = new JMenuItem("Sharpen");
 
@@ -143,6 +144,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_prewitt);
         process_menu.add(process_menu_sobelEdge);
         process_menu.add(process_menu_blurredSobel);
+        process_menu.add(process_menu_inverted_sobel);
         process_menu.add(process_menu_pixelate);
         process_menu.add(process_menu_sharpen);
 
@@ -216,6 +218,12 @@ public class ImageProcessorApp extends JFrame {
         process_menu_blurredSobel.addActionListener(
                 e -> {
                     setDisplayImage(images.get(current_image_index).applyPreblurredSobelOperator());
+                }
+        );
+
+        process_menu_inverted_sobel.addActionListener(
+                e -> {
+                    setDisplayImage(images.get(current_image_index).applyInvertedSobel());
                 }
         );
 
