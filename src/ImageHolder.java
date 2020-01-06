@@ -18,6 +18,7 @@ public class ImageHolder {
     private BufferedImage threshold_image;
     private BufferedImage box_blur_image;
     private BufferedImage gaussian_blur_image;
+    private BufferedImage prewitt_image;
     private BufferedImage sobel_image;
     private BufferedImage preblurred_sobel_image;
     private BufferedImage pixelated_image;
@@ -132,6 +133,14 @@ public class ImageHolder {
 
         gaussian_blur_image = image_processor.applyGaussianBlur(original_image);
         return gaussian_blur_image;
+    }
+
+    public BufferedImage applyPrewittOperator() {
+        if (prewitt_image != null)
+            return prewitt_image;
+
+        prewitt_image = image_processor.applyPrewittOperator(original_image);
+        return prewitt_image;
     }
 
     /**

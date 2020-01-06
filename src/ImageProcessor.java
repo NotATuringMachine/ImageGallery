@@ -14,6 +14,7 @@ public class ImageProcessor {
 
     /**
      * Applies a greyscale filter to the image
+     * @param original_image original image
      * @return greyscale image
      */
     public BufferedImage applyGreyscaleFilter(BufferedImage original_image){
@@ -45,6 +46,7 @@ public class ImageProcessor {
     /**
      * Applies a Negative filter to the original image i.e inverts
      * the RGB values for each pixel
+     * @param original_image original image
      * @return negative
      */
     public BufferedImage applyNegativeFilter(BufferedImage original_image){
@@ -71,6 +73,7 @@ public class ImageProcessor {
 
     /**
      * Applies a sepia filter to the original image
+     * @param original_image original image
      * @return sepia image
      */
     public BufferedImage applySepiaFilter(BufferedImage original_image){
@@ -113,6 +116,7 @@ public class ImageProcessor {
 
     /**
      * Applies a cartoon-esque filter to the image by quantizing the RGB values of each pixel
+     * @param original_image original image
      * @return cartoon-esque image
      */
     public BufferedImage applyCartoonFilter(BufferedImage original_image){
@@ -160,6 +164,7 @@ public class ImageProcessor {
      * Increase the contrast of the image
      * Contrast is increased by calculating the average value of each pixel and increasing its brightness if
      * above a certain threshold (127) and decreasing it if it is below
+     * @param original_image original image
      * @return contrast enhanced Image
      */
     public BufferedImage applyContrastEnhancement(BufferedImage original_image){
@@ -212,6 +217,7 @@ public class ImageProcessor {
 
     /**
      * Converts the image into a black and white image
+     * @param original_image original image
      * @return black and white image
      */
     public BufferedImage thresholdImage(BufferedImage original_image) {
@@ -246,6 +252,7 @@ public class ImageProcessor {
 
     /**
      * Applies a box blur to the original image. Uses a kernel size of 5
+     * @param original_image original image
      * @return box blurred image
      */
     public BufferedImage applyBoxBlur(BufferedImage original_image) {
@@ -289,6 +296,7 @@ public class ImageProcessor {
 
     /**
      * Applies a gaussian blur to the original image.
+     * @param original_image original image
      * @return gaussian blurred image
      */
     public BufferedImage applyGaussianBlur(BufferedImage original_image) {
@@ -336,9 +344,67 @@ public class ImageProcessor {
         return transformed_image;
     }
 
+    /**
+     * Applies the prewitt edge-detection operator
+     * @param original_image original image
+     * @return edge-detected image
+     */
+    public BufferedImage applyPrewittOperator(BufferedImage original_image) {
+        BufferedImage greyscale_image = this.applyGreyscaleFilter(original_image); // Convert image to greyscale
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+
+        int[][] prewitt_kernel_x = {{1, 0, -1}, {1, 0, -1}, {1, 0, -1}};
+        int[][] prewitt_kernel_y = {{1, 1, 1}, {0, 0, 0}, {-1, -1, -1}};
+        int kernel_size = 3;
+        //Kernel sums
+        int kernel_sum_x = 0;
+        int kernel_sum_y = 0;
+        //Current pixel in the kernel
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
+        int final_pixel_value;
+
+        for (int x = 0; x < greyscale_image.getWidth(); x++) {
+            for (int y = 0; y < greyscale_image.getHeight(); y++) {
+                kernel_sum_x = 0;
+                kernel_sum_y = 0;
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        //Change current pixel's coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
+
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < greyscale_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < greyscale_image.getHeight()) {
+
+                            //Get pixel's greyscale value
+                            c = new Color ( greyscale_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            kernel_sum_x += prewitt_kernel_x[i][j] * c.getRed();
+                            kernel_sum_y += prewitt_kernel_y[i][j] * c.getRed();
+                        }
+                    }
+                }
+                final_pixel_value = (int) (Math.sqrt(kernel_sum_x * kernel_sum_x + kernel_sum_y * kernel_sum_y));
+                final_pixel_value = map(final_pixel_value); // Ensure the pixel value is in the range [0 -255]
+
+                c = new Color(final_pixel_value, final_pixel_value, final_pixel_value);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+        return transformed_image;
+    }
+
 
     /**
      * Applies the Sobel operator to the original image for edge detection
+     * @param original_image original image
      * @return edge-detected image
      */
     public BufferedImage applySobelOperator(BufferedImage original_image) {

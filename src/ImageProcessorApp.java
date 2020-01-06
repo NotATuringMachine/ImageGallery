@@ -124,6 +124,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_threshold = new JMenuItem("Threshold Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
         JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
+        JMenuItem process_menu_prewitt = new JMenuItem("Prewitt Edge Detection");
         JMenuItem process_menu_sobelEdge = new JMenuItem("Sobel Edge Detection");
         JMenuItem process_menu_blurredSobel = new JMenuItem("Sobel Edge Detection (Pre-blurred)");
         JMenuItem process_menu_pixelate = new JMenuItem("Pixelate");
@@ -139,6 +140,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_threshold);
         process_menu.add(process_menu_boxBlur);
         process_menu.add(process_menu_gaussianBlur);
+        process_menu.add(process_menu_prewitt);
         process_menu.add(process_menu_sobelEdge);
         process_menu.add(process_menu_blurredSobel);
         process_menu.add(process_menu_pixelate);
@@ -196,6 +198,12 @@ public class ImageProcessorApp extends JFrame {
         process_menu_gaussianBlur.addActionListener(
                 e -> {
                     setDisplayImage(images.get(current_image_index).applyGaussianBlur());
+                }
+        );
+
+        process_menu_prewitt.addActionListener(
+                e -> {
+                    setDisplayImage(images.get(current_image_index).applyPrewittOperator());
                 }
         );
 
