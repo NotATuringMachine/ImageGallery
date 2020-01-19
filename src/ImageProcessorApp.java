@@ -289,14 +289,13 @@ public class ImageProcessorApp extends JFrame {
         BufferedImage transformed_image = new BufferedImage(new_image_width, new_image_height, original_image.getType());
         AffineTransform at = new AffineTransform();
         at.scale(scale_factor_x, scale_factor_y);
-        
+
         try{
             AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             transformed_image = scaleOp.filter(original_image, transformed_image);
         } catch ( Exception e) {
             //This should not happen but just in case
-            JOptionPane.showMessageDialog(this, "There was a problem displaying the image correctly:" +
-                    e.toString());
+            JOptionPane.showMessageDialog(this, "There was a problem displaying the image correctly:");
         }
 
 
