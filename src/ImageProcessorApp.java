@@ -248,8 +248,6 @@ public class ImageProcessorApp extends JFrame {
      * @param image image to be displayed
      */
     private void setDisplayImage(BufferedImage image){
-        System.out.println("Image Width: " + image.getWidth());
-        System.out.println("Image Height: " + image.getHeight());
         if (image.getWidth() > window_width || image.getHeight() > window_height) {
             image = scaleImage(image, (int) (0.9 * window_width) , (int) (0.9 * window_height));
         }
