@@ -1,6 +1,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,11 +19,13 @@ public class ImageProcessorApp extends JFrame {
     private BufferedImage current_displayed_image;
     private JLabel image_label; // JLabel used to display image
     private JMenuBar menu_bar;
+    private int window_width = 1000;
+    private int window_height = 700;
 
     public ImageProcessorApp(){
         super("Image Processor");
         setLayout( new FlowLayout());
-        setSize(1000, 700);
+        setSize(window_width, window_height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         images = new ArrayList<>();
@@ -74,7 +78,7 @@ public class ImageProcessorApp extends JFrame {
                                 throw new IOException();
                             }
                             setDisplayImage(image.getOriginalImage());
-                        } catch ( IOException err){
+                        } catch ( IOException err ){
                             JOptionPane.showMessageDialog(this, "There was a problem reading your image. Please" +
                                     " try again or use a different image.");
                         }
@@ -244,6 +248,11 @@ public class ImageProcessorApp extends JFrame {
      * @param image image to be displayed
      */
     private void setDisplayImage(BufferedImage image){
+        System.out.println("Image Width: " + image.getWidth());
+        System.out.println("Image Height: " + image.getHeight());
+        if (image.getWidth() > window_width || image.getHeight() > window_height) {
+            image = scaleImage(image, (int) (0.9 * window_width) , (int) (0.9 * window_height));
+        }
         current_displayed_image = image;
         this.image_label.setIcon(new ImageIcon(image));
     }
@@ -254,5 +263,43 @@ public class ImageProcessorApp extends JFrame {
      */
     private BufferedImage getDisplayedImage(){
         return current_displayed_image;
+    }
+
+
+    /**
+     * Scales down an image
+     * @param original_image image to be scaled
+     * @param new_image_width width of the new image
+     * @param new_image_height height of the new image
+     * @return scaled image
+     */
+    public BufferedImage scaleImage(BufferedImage original_image, int new_image_width, int new_image_height){
+        //Get original image dimensions as a double for division
+        double original_image_width = original_image.getWidth();
+        double original_image_height = original_image.getHeight();
+
+        if (new_image_width > original_image_width || new_image_height > original_image_height) {
+            //This should not happen but just in case
+            throw new IllegalArgumentException("New image width or height greater than the original");
+        }
+        //Calculate the scale down factor
+        double scale_factor_x = new_image_width/original_image_width;
+        double scale_factor_y = new_image_height/original_image_height;
+
+        BufferedImage transformed_image = new BufferedImage(new_image_width, new_image_height, original_image.getType());
+        AffineTransform at = new AffineTransform();
+        at.scale(scale_factor_x, scale_factor_y);
+        
+        try{
+            AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            transformed_image = scaleOp.filter(original_image, transformed_image);
+        } catch ( Exception e) {
+            //This should not happen but just in case
+            JOptionPane.showMessageDialog(this, "There was a problem displaying the image correctly:" +
+                    e.toString());
+        }
+
+
+        return transformed_image;
     }
 }

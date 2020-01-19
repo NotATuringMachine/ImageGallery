@@ -3,6 +3,8 @@
  */
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.nio.Buffer;
 
@@ -527,9 +529,6 @@ public class ImageProcessor {
         int[][] sharpen_kernel = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
         int kernel_size = 3;
         //Running sum in the kernel
-        int red_value;
-        int green_value;
-        int blue_value;
         int new_red_value;
         int new_green_value;
         int new_blue_value;
@@ -537,7 +536,6 @@ public class ImageProcessor {
         //Current pixel in the kernel
         int current_pixel_in_kernel_x;
         int current_pixel_in_kernel_y;
-        int final_pixel_value;
 
         for (int x = 0; x < original_image.getWidth(); x++) {
             for (int y = 0; y < original_image.getHeight(); y++) {
@@ -555,7 +553,6 @@ public class ImageProcessor {
                         if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < original_image.getWidth() &&
                                 current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < original_image.getHeight()) {
 
-                            //Get pixel's greyscale value
                             c = new Color ( original_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
                             //Add weighted pixel values to running kernel sums
                             new_red_value += sharpen_kernel[i][j] * c.getRed();
