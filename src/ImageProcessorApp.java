@@ -1,6 +1,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -79,7 +81,7 @@ public class ImageProcessorApp extends JFrame {
                             }
                             setDisplayImage(image.getOriginalImage());
                         } catch ( IOException err ){
-                            JOptionPane.showMessageDialog(this, "There was a problem reading your image. Please" +
+                            showDisplayWindow("There was a problem reading your image. Please" +
                                     " try again or use a different image.");
                         }
                     }
@@ -94,10 +96,14 @@ public class ImageProcessorApp extends JFrame {
                     JFileChooser file_chooser = new JFileChooser(".");
                     int ret_val = file_chooser.showSaveDialog(ImageProcessorApp.this);
                     if (ret_val == JFileChooser.APPROVE_OPTION) {
-                        try (FileWriter fw = new FileWriter(file_chooser.getSelectedFile())){
-                            ImageIO.write(getDisplayedImage(), "jpg", (file_chooser.getSelectedFile()));
+                        try (FileWriter fw = new FileWriter(file_chooser.getSelectedFile())) {
+                            ImageIO.write(this.getDisplayedImage(), "jpg", (file_chooser.getSelectedFile()));
                         } catch (IOException err) {
-                            err.printStackTrace();
+                            showDisplayWindow("There was a problem saving the image");
+                        } catch (NullPointerException err) {
+                            showDisplayWindow("There is no image in the display");
+                        } catch (IllegalArgumentException err) {
+                            showDisplayWindow("There was a problem saving the image");
                         }
                     }
                 }
@@ -107,9 +113,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem file_menu_quit = new JMenuItem("Quit");
         file_menu.add(file_menu_quit);
         file_menu_quit.addActionListener(
-                e -> {
-                    System.exit(0);
-                }
+                e -> System.exit(0)
         );
     }
 
@@ -125,7 +129,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_sepia = new JMenuItem("Sepia Filter");
         JMenuItem process_menu_cartoon = new JMenuItem("Cartoon Filter");
         JMenuItem process_menu_false = new JMenuItem("Increase Contrast");
-        JMenuItem process_menu_threshold = new JMenuItem("Threshold Image");
+        JMenuItem process_menu_threshold = new JMenuItem("Binary Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
         JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
         JMenuItem process_menu_prewitt = new JMenuItem("Prewitt Edge Detection");
@@ -155,93 +159,163 @@ public class ImageProcessorApp extends JFrame {
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
                 e -> {
-                    setDisplayImage(images.get(current_image_index).getOriginalImage());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).getOriginalImage());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
+
                 }
         );
 
         process_menu_greyscale.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyGreyscaleFilter());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyGreyscaleFilter());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_negative.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyNegativeFilter());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyNegativeFilter());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
+
                 }
         );
 
         process_menu_sepia.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applySepiaFilter());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applySepiaFilter());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_cartoon.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyCartoonFilter());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyCartoonFilter());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_false.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyContrastEnhancement());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyContrastEnhancement());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_threshold.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).thresholdImage());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).thresholdImage());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_boxBlur.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyBoxBlur());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyBoxBlur());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_gaussianBlur.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyGaussianBlur());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyGaussianBlur());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_prewitt.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyPrewittOperator());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyPrewittOperator());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_sobelEdge.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applySobelOperator());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applySobelOperator());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_blurredSobel.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyPreblurredSobelOperator());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyPreblurredSobelOperator());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_inverted_sobel.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).applyInvertedSobel());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).applyInvertedSobel());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_pixelate.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).pixelate());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).pixelate());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
 
         process_menu_sharpen.addActionListener(
                 e -> {
-                    setDisplayImage(images.get(current_image_index).sharpen());
+                    if (images.size() > 0) {
+                        setDisplayImage(images.get(current_image_index).sharpen());
+                    } else {
+                        showDisplayWindow("There is no image loaded.");
+                    }
                 }
         );
+    }
+
+    /**
+     * Displays a window with the specified message
+     * @param message message to display
+     */
+    private void showDisplayWindow(String message){
+        JOptionPane.showMessageDialog(this, message);
     }
 
     /** Sets an image into the current display
@@ -260,7 +334,11 @@ public class ImageProcessorApp extends JFrame {
      * @return current displayed image
      */
     private BufferedImage getDisplayedImage(){
-        return current_displayed_image;
+        if (current_displayed_image == null) {
+            throw new NullPointerException();
+        } else {
+            return current_displayed_image;
+        }
     }
 
 
