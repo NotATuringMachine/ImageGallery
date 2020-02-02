@@ -134,6 +134,10 @@ public class ImageHolder {
         return gaussian_blur_image;
     }
 
+    /**
+     * Applies the prewitt edge detection operator to the original image
+     * @return
+     */
     public BufferedImage applyPrewittOperator() {
         if (prewitt_image != null)
             return prewitt_image;
@@ -143,7 +147,7 @@ public class ImageHolder {
     }
 
     /**
-     * Applies the Sobel operator to the original image for edge detection
+     * Applies the Sobel edge detection operator to the original image
      * @return edge-detected image
      */
     public BufferedImage applySobelOperator() {
