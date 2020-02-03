@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class ImageProcessorApp extends JFrame {
 
-    private ImageHolder image; //Holds all the images currently in the application
+    private ImageHolder image; //Holds the image and all processed versions currently in the application
     private BufferedImage current_displayed_image;
     private JLabel image_label; // JLabel used to display image
     private JMenuBar menu_bar;
