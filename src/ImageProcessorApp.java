@@ -1,8 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -16,8 +14,7 @@ import java.util.ArrayList;
  */
 public class ImageProcessorApp extends JFrame {
 
-    private ArrayList<ImageHolder> images; //Holds all the images currently in the application
-    private int current_image_index;
+    private ImageHolder image; //Holds all the images currently in the application
     private BufferedImage current_displayed_image;
     private JLabel image_label; // JLabel used to display image
     private JMenuBar menu_bar;
@@ -29,10 +26,10 @@ public class ImageProcessorApp extends JFrame {
         setLayout( new FlowLayout());
         setSize(window_width, window_height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
 
-        images = new ArrayList<>();
+        image = new ImageHolder(null);
         image_label = new JLabel();
-        current_image_index = -1;
         add(image_label);
 
         setupMenu();
@@ -68,21 +65,20 @@ public class ImageProcessorApp extends JFrame {
                         BufferedImage buff_image;
                         try {
                             buff_image = ImageIO.read(f);
-                            ImageHolder image = new ImageHolder(buff_image);
-                            images.add(image);
-                            current_image_index = images.size() - 1;
+                            image = new ImageHolder(buff_image);
 
                             //Check if image is loaded into application properly
                             //else remove object from list and throw new IOException
                             if (image.getOriginalImage() == null) {
-                                images.remove(image);
-                                current_image_index = images.size() - 1;
                                 throw new IOException();
                             }
                             setDisplayImage(image.getOriginalImage());
                         } catch ( IOException err ){
                             showDisplayWindow("There was a problem reading your image. Please" +
                                     " try again or use a different image.");
+                        } catch ( Exception err ) {
+                            showDisplayWindow("Unexpected Error occurred. Please try again or file an issue with the " +
+                                    "developer.");
                         }
                     }
                 }
@@ -127,7 +123,6 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_greyscale = new JMenuItem("Greyscale Filter");
         JMenuItem process_menu_negative = new JMenuItem("Negative Filter");
         JMenuItem process_menu_sepia = new JMenuItem("Sepia Filter");
-        JMenuItem process_menu_cartoon = new JMenuItem("Cartoon Filter");
         JMenuItem process_menu_false = new JMenuItem("Increase Contrast");
         JMenuItem process_menu_threshold = new JMenuItem("Binary Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
@@ -144,7 +139,6 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_greyscale);
         process_menu.add(process_menu_negative);
         process_menu.add(process_menu_sepia);
-        process_menu.add(process_menu_cartoon);
         process_menu.add(process_menu_false);
         process_menu.add(process_menu_threshold);
         process_menu.add(process_menu_boxBlur);
@@ -159,8 +153,8 @@ public class ImageProcessorApp extends JFrame {
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).getOriginalImage());
+                    if (image !=  null) {
+                        setDisplayImage(image.getOriginalImage());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -170,8 +164,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_greyscale.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyGreyscaleFilter());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyGreyscaleFilter());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -180,8 +174,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_negative.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyNegativeFilter());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyNegativeFilter());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -191,18 +185,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_sepia.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applySepiaFilter());
-                    } else {
-                        showDisplayWindow("There is no image loaded.");
-                    }
-                }
-        );
-
-        process_menu_cartoon.addActionListener(
-                e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyCartoonFilter());
+                    if (image !=  null) {
+                        setDisplayImage(image.applySepiaFilter());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -211,8 +195,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_false.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyContrastEnhancement());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyContrastEnhancement());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -221,8 +205,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_threshold.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).thresholdImage());
+                    if (image !=  null) {
+                        setDisplayImage(image.thresholdImage());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -231,8 +215,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_boxBlur.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyBoxBlur());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyBoxBlur());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -241,8 +225,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_gaussianBlur.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyGaussianBlur());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyGaussianBlur());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -251,8 +235,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_prewitt.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyPrewittOperator());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyPrewittOperator());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -261,8 +245,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_sobelEdge.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applySobelOperator());
+                    if (image !=  null) {
+                        setDisplayImage(image.applySobelOperator());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -271,8 +255,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_blurredSobel.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyPreblurredSobelOperator());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyPreblurredSobelOperator());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -281,8 +265,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_inverted_sobel.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).applyInvertedSobel());
+                    if (image !=  null) {
+                        setDisplayImage(image.applyInvertedSobel());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -291,8 +275,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_pixelate.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).pixelate());
+                    if (image !=  null) {
+                        setDisplayImage(image.pixelate());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -301,8 +285,8 @@ public class ImageProcessorApp extends JFrame {
 
         process_menu_sharpen.addActionListener(
                 e -> {
-                    if (images.size() > 0) {
-                        setDisplayImage(images.get(current_image_index).sharpen());
+                    if (image !=  null) {
+                        setDisplayImage(image.sharpen());
                     } else {
                         showDisplayWindow("There is no image loaded.");
                     }
@@ -322,15 +306,19 @@ public class ImageProcessorApp extends JFrame {
      * @param image image to be displayed
      */
     private void setDisplayImage(BufferedImage image){
-        if (image.getWidth() > window_width || image.getHeight() > window_height) {
+        if (image.getWidth() > window_width && image.getHeight() > window_height) {
             image = scaleImage(image, (int) (0.9 * window_width) , (int) (0.9 * window_height));
+        } else if (image.getWidth() > window_width) {
+            image = scaleImage(image, (int) (0.9 * window_width), image.getHeight());
+        } else if (image.getHeight() > window_height) {
+            image = scaleImage(image, image.getWidth(), (int) (0.9 * window_height));
         }
         current_displayed_image = image;
         this.image_label.setIcon(new ImageIcon(image));
     }
 
     /**
-     *  Retrieves the image currently being displayed
+     * Retrieves the image currently being displayed
      * @return current displayed image
      */
     private BufferedImage getDisplayedImage(){
@@ -356,7 +344,7 @@ public class ImageProcessorApp extends JFrame {
 
         if (new_image_width > original_image_width || new_image_height > original_image_height) {
             //This should not happen but just in case
-            throw new IllegalArgumentException("New image width or height greater than the original");
+            showDisplayWindow("There was a problem displaying the image correctly. Please reload the image.");
         }
         //Calculate the scale down factor
         double scale_factor_x = new_image_width/original_image_width;
@@ -371,7 +359,7 @@ public class ImageProcessorApp extends JFrame {
             transformed_image = scaleOp.filter(original_image, transformed_image);
         } catch ( Exception e) {
             //This should not happen but just in case
-            JOptionPane.showMessageDialog(this, "There was a problem displaying the image correctly:");
+            showDisplayWindow("There was a problem displaying the image correctly. Please reload the image.");
         }
 
 
