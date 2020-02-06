@@ -474,6 +474,7 @@ public class ImageProcessor {
 
     /**
      * Pixelates an image by setting all the pixels in the kernel to the same RGB value
+     * as the pixel in the centre of the kernel.
      * @param original_image
      * @return
      */
