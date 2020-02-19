@@ -26,6 +26,7 @@ public class ImageProcessorApp extends JFrame {
         setSize(window_width, window_height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        this.getContentPane().setBackground( Color.GRAY ); //Set 
 
         image_label = new JLabel();
         add(image_label);
@@ -132,7 +133,11 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_pixelate = new JMenuItem("Pixelate");
         JMenuItem process_menu_sharpen = new JMenuItem("Sharpen");
 
-        // Add JMenuItems to drop down menu
+        //Add Tool tips to ambiguous JMenuItems
+        process_menu_blurredSobel.setToolTipText("Applies a Gaussian kernel to the image before the sobel kernel");
+        process_menu_inverted_sobel.setToolTipText("Inverts the RGB values of each pixel after applying the sobel kernel");
+
+        //Add JMenuItems to drop down menu
         process_menu.add(process_menu_original);
         process_menu.add(process_menu_greyscale);
         process_menu.add(process_menu_negative);
