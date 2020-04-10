@@ -374,7 +374,7 @@ public class ImageProcessor {
 
                 for (int i = 0; i < kernel_size; i++) {
                     for (int j = 0; j < kernel_size; j++) {
-                        //Change current pixel's coordinates in the kernel to image coordinates
+                        //Change current coordinates in the kernel to image coordinates
                         current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
                         current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
 
@@ -432,7 +432,7 @@ public class ImageProcessor {
 
                 for (int i = 0; i < kernel_size; i++) {
                     for (int j = 0; j < kernel_size; j++) {
-                        //Change current pixel's coordinates in the kernel to image coordinates
+                        //Change current coordinates in the kernel to image coordinates
                         current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
                         current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
 
@@ -495,7 +495,7 @@ public class ImageProcessor {
 
                 for (int i = 0; i < kernel_size; i++) {
                     for (int j = 0; j < kernel_size; j++) {
-                        //Change current pixel's coordinates in the kernel to image coordinates
+                        //Change current coordinates in the kernel to image coordinates
                         current_pixel_in_kernel_x = x - (kernel_size - 1) / 2 + i;
                         current_pixel_in_kernel_y = y - (kernel_size - 1) / 2 + j;
 
@@ -543,7 +543,7 @@ public class ImageProcessor {
 
                 for (int i = 0; i < kernel_size; i++) {
                     for (int j = 0; j < kernel_size; j++) {
-                        //Change current pixel's coordinates in the kernel to image coordinates
+                        //Change current coordinates in the kernel to image coordinates
                         current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
                         current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
 
@@ -568,6 +568,223 @@ public class ImageProcessor {
                 transformed_image.setRGB(x, y, c.getRGB());
             }
         }
+        return transformed_image;
+    }
+
+
+    /**
+     * Calculates the partial derivative in the x direction using the sobel kernel
+     * @param original_image original geryscale image
+     * @return the image's partial derivate in the x direction
+     */
+    private BufferedImage calculateXPartialDerivative(BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+
+        int[][] sobel_kernel_x = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+        int kernel_size = sobel_kernel_x.length;;
+        //Kernel sum
+        int kernel_sum_x = 0;
+        //Current pixel in the kernel
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
+        int final_pixel_value;
+
+        for (int x = 0; x < original_image.getWidth(); x++) {
+            for (int y = 0; y < original_image.getHeight(); y++) {
+                kernel_sum_x = 0;
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        //Change current coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
+
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < original_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < original_image.getHeight()) {
+
+                            //Get pixel's greyscale value
+                            c = new Color ( original_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            kernel_sum_x += sobel_kernel_x[i][j] * c.getRed();
+                        }
+                    }
+                }
+                final_pixel_value = map(kernel_sum_x); // Ensure the pixel value is in the range [0 -255]
+
+                c = new Color(final_pixel_value, final_pixel_value, final_pixel_value);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+        return transformed_image;
+    }
+
+    /**
+     * Calculates the partial derivative in the y direction using the sobel kernel
+     * @param original_image original greyscale image
+     * @return the image's partial derivate in the y direction
+     */
+    private BufferedImage calculateYPartialDerivative(BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+
+        int[][] sobel_kernel_y = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+        int kernel_size = sobel_kernel_y.length;;
+        //Kernel sum
+        int kernel_sum_y = 0;
+        //Current pixel in the kernel
+        int current_pixel_in_kernel_x;
+        int current_pixel_in_kernel_y;
+        int final_pixel_value;
+
+        for (int x = 0; x < original_image.getWidth(); x++) {
+            for (int y = 0; y < original_image.getHeight(); y++) {
+                kernel_sum_y = 0;
+
+                for (int i = 0; i < kernel_size; i++) {
+                    for (int j = 0; j < kernel_size; j++) {
+                        //Change current coordinates in the kernel to image coordinates
+                        current_pixel_in_kernel_x = x - (kernel_size - 1)/2 + i;
+                        current_pixel_in_kernel_y = y - (kernel_size - 1)/2 + j;
+
+                        //Check pixel coordinate is in image bounds
+                        if (current_pixel_in_kernel_x >= 0 && current_pixel_in_kernel_x < original_image.getWidth() &&
+                                current_pixel_in_kernel_y >= 0 && current_pixel_in_kernel_y < original_image.getHeight()) {
+
+                            //Get pixel's greyscale value
+                            c = new Color ( original_image.getRGB(current_pixel_in_kernel_x, current_pixel_in_kernel_y) );
+                            //Add weighted pixel values to running kernel sums
+                            kernel_sum_y += sobel_kernel_y[i][j] * c.getRed();
+                        }
+                    }
+                }
+                final_pixel_value = map(kernel_sum_y); // Ensure the pixel value is in the range [0 -255]
+
+                c = new Color(final_pixel_value, final_pixel_value, final_pixel_value);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+        return transformed_image;
+    }
+
+    /**
+     * Calculates the average intensity in a 3x3 window with (x, y) has the centre pixel
+     * @param image image assumed to be a greyscale image
+     * @param x x-coordinate of the centre of the window
+     * @param y y-coordinate of the centre of the window
+     * @param square true if the intensities should be sqaured i.e calculate the average of the sqaure of the intensities
+     * @return the average intensity of the window.
+     */
+    private int calculateAverageWindowIntensity(BufferedImage image, int x, int y, boolean square) {
+        int average_intensity = 0;
+
+        if (square) {
+            average_intensity += ((new Color(image.getRGB(x - 1, y - 1))).getRed()) * ((new Color(image.getRGB(x - 1, y - 1))).getRed());
+            average_intensity += ((new Color(image.getRGB(x    , y - 1))).getRed()) * ((new Color(image.getRGB(x    , y - 1))).getRed());
+            average_intensity += ((new Color(image.getRGB(x + 1, y - 1))).getRed()) * ((new Color(image.getRGB(x + 1, y - 1))).getRed());
+
+            average_intensity += ((new Color(image.getRGB(x - 1, y    ))).getRed()) * ((new Color(image.getRGB(x - 1, y    ))).getRed());
+            average_intensity += ((new Color(image.getRGB(x    , y    ))).getRed()) * ((new Color(image.getRGB(x    , y    ))).getRed());
+            average_intensity += ((new Color(image.getRGB(x + 1, y    ))).getRed()) * ((new Color(image.getRGB(x + 1, y    ))).getRed());
+
+            average_intensity += ((new Color(image.getRGB(x - 1, y + 1))).getRed()) * ((new Color(image.getRGB(x - 1, y + 1))).getRed());
+            average_intensity += ((new Color(image.getRGB(x    , y + 1))).getRed()) * ((new Color(image.getRGB(x    , y + 1))).getRed());
+            average_intensity += ((new Color(image.getRGB(x + 1, y + 1))).getRed()) * ((new Color(image.getRGB(x + 1, y + 1))).getRed());
+
+        } else {
+            average_intensity += (new Color(image.getRGB(x - 1, y - 1))).getRed();
+            average_intensity += (new Color(image.getRGB(x    , y - 1))).getRed();
+            average_intensity += (new Color(image.getRGB(x + 1, y - 1))).getRed();
+
+            average_intensity += (new Color(image.getRGB(x - 1, y    ))).getRed();
+            average_intensity += (new Color(image.getRGB(x    , y    ))).getRed();
+            average_intensity += (new Color(image.getRGB(x + 1, y    ))).getRed();
+
+            average_intensity += (new Color(image.getRGB(x - 1, y + 1))).getRed();
+            average_intensity += (new Color(image.getRGB(x    , y + 1))).getRed();
+            average_intensity += (new Color(image.getRGB(x + 1, y + 1))).getRed();
+        }
+
+        return average_intensity / 9;
+    }
+
+
+    /**
+     * Draw a green sqaure on the image centred on the pixel (x, y)
+     * @param image image to draw on
+     * @param x x-coordinate of the centre of the square
+     * @param y y-coordinate of the centre of the square
+     * @return image with square drawn on it
+     */
+    private BufferedImage drawSquare(BufferedImage image, int x, int y){
+        Color c = new Color(0, 255, 0);
+        for (int i = x - 3; i <= x + 3; i++) {
+            for (int j = y - 3; j <= y + 3; j++) {
+                image.setRGB(i, j, c.getRGB());
+            }
+        }
+        return image;
+    }
+
+
+    /**
+     * Detects corners using Harris Corner Detection
+     * @param image greyscale image
+     * @return image with corners detected
+     */
+    public BufferedImage detectHarrisCorners(BufferedImage image, BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                image.getType());
+        Color c;
+
+        BufferedImage x_image_derivative = calculateXPartialDerivative(image);
+        BufferedImage y_image_derivative = calculateYPartialDerivative(image);
+
+        int average_x_intensity;
+        int average_y_intensity;
+        // Average of the square of the intensities
+        int average_x_intensity_squared;
+        int average_y_intensity_sqaured;
+
+        double determinant;
+        double trace;
+        double r_score;
+
+        // Threshold is an empirically determined value
+        double threshold = 20000000.0;
+
+        for (int i = 3; i < image.getWidth() - 3; i++){
+            for (int j = 3; j < image.getHeight() - 3; j++) {
+                //Get average intensities
+                average_x_intensity = calculateAverageWindowIntensity(x_image_derivative, i, j, false);
+                average_y_intensity = calculateAverageWindowIntensity(y_image_derivative, i, j, false);
+                average_x_intensity_squared = calculateAverageWindowIntensity(x_image_derivative, i, j, true);
+                average_y_intensity_sqaured = calculateAverageWindowIntensity(y_image_derivative, i, j, true);
+
+                determinant = (float)(average_x_intensity_squared * average_y_intensity_sqaured - ((average_x_intensity * average_y_intensity) * (average_x_intensity * average_y_intensity)));
+                trace = (float)(average_x_intensity_squared + average_y_intensity_sqaured);
+
+                //Calculate the R score for the window
+                r_score = ( determinant - 0.15 * trace * trace);
+                
+                if (r_score > threshold) {
+                    transformed_image = drawSquare(transformed_image, i, j);
+                } else {
+                    c = new Color(original_image.getRGB(i, j));
+                    transformed_image.setRGB(i, j, c.getRGB());
+                }
+            }
+        }
+
         return transformed_image;
     }
 }

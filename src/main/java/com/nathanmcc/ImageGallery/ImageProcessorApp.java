@@ -132,6 +132,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_inverted_sobel = new JMenuItem("Sobel Edge Detection (Post-Inverted)");
         JMenuItem process_menu_pixelate = new JMenuItem("Pixelate");
         JMenuItem process_menu_sharpen = new JMenuItem("Sharpen");
+        JMenuItem process_menu_harris = new JMenuItem("Harris Corner Detection");
 
         //Add Tool tips to ambiguous JMenuItems
         process_menu_blurredSobel.setToolTipText("Applies a Gaussian kernel to the image before the sobel kernel");
@@ -152,6 +153,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_inverted_sobel);
         process_menu.add(process_menu_pixelate);
         process_menu.add(process_menu_sharpen);
+        process_menu.add(process_menu_harris);
 
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
@@ -294,6 +296,16 @@ public class ImageProcessorApp extends JFrame {
                         showDisplayWindow("There is no image loaded.");
                     }
                 }
+        );
+
+        process_menu_harris.addActionListener(
+            e -> {
+                if (image != null) {
+                    setDisplayImage(image.harrisCorners());
+                } else {
+                    showDisplayWindow("There is no image loaded.");
+                }
+            }
         );
     }
 

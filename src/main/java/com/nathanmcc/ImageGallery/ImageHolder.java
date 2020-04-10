@@ -22,6 +22,7 @@ public class ImageHolder {
     private BufferedImage inverted_sobel_image;
     private BufferedImage pixelated_image;
     private BufferedImage sharpened_image;
+    private BufferedImage harris_corners;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -213,6 +214,18 @@ public class ImageHolder {
 
         sharpened_image = image_processor.sharpen(original_image);
         return sharpened_image;
+    }
+
+
+    public BufferedImage harrisCorners() {
+        if (harris_corners != null)
+            return harris_corners;
+
+        if (greyscale_image == null)
+            greyscale_image = image_processor.applyGreyscaleFilter(original_image);
+
+        harris_corners = image_processor.detectHarrisCorners(greyscale_image, original_image);
+        return harris_corners;
     }
 
 }
