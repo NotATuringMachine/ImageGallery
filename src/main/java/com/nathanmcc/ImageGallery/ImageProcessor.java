@@ -770,11 +770,75 @@ public class ImageProcessor {
                 average_x_intensity_squared = calculateAverageWindowIntensity(x_image_derivative, i, j, true);
                 average_y_intensity_sqaured = calculateAverageWindowIntensity(y_image_derivative, i, j, true);
 
+                //Calculate determinant and trace of the structure tensor for the window
                 determinant = (float)(average_x_intensity_squared * average_y_intensity_sqaured - ((average_x_intensity * average_y_intensity) * (average_x_intensity * average_y_intensity)));
                 trace = (float)(average_x_intensity_squared + average_y_intensity_sqaured);
 
                 //Calculate the R score for the window
                 r_score = ( determinant - 0.15 * trace * trace);
+                
+                if (r_score > threshold) {
+                    transformed_image = drawSquare(transformed_image, i, j);
+                } else {
+                    c = new Color(original_image.getRGB(i, j));
+                    transformed_image.setRGB(i, j, c.getRGB());
+                }
+            }
+        }
+
+        return transformed_image;
+    }
+
+
+    /**
+     * Detects corners using Shi-Tomasi Corner Detection
+     * @param image greyscale image
+     * @return image with corners detected
+     */
+    public BufferedImage detectShiTomasiCorners(BufferedImage image, BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                image.getType());
+        Color c;
+
+        BufferedImage x_image_derivative = calculateXPartialDerivative(image);
+        BufferedImage y_image_derivative = calculateYPartialDerivative(image);
+
+        int average_x_intensity;
+        int average_y_intensity;
+        // Average of the square of the intensities
+        int average_x_intensity_squared;
+        int average_y_intensity_sqaured;
+
+        double determinant;
+        double trace;
+        double r_score;
+        //Eigenvalues
+        double e1;
+        double e2;
+
+        // Threshold is an empirically determined value
+        double threshold = 10000.0;
+
+        for (int i = 3; i < image.getWidth() - 3; i++){
+            for (int j = 3; j < image.getHeight() - 3; j++) {
+                //Get average intensities
+                average_x_intensity = calculateAverageWindowIntensity(x_image_derivative, i, j, false);
+                average_y_intensity = calculateAverageWindowIntensity(y_image_derivative, i, j, false);
+                average_x_intensity_squared = calculateAverageWindowIntensity(x_image_derivative, i, j, true);
+                average_y_intensity_sqaured = calculateAverageWindowIntensity(y_image_derivative, i, j, true);
+
+                //Calculate determinant and trace of the structure tensor for the window
+                determinant = (float)(average_x_intensity_squared * average_y_intensity_sqaured - ((average_x_intensity * average_y_intensity) * (average_x_intensity * average_y_intensity)));
+                trace = (float)(average_x_intensity_squared + average_y_intensity_sqaured);
+
+                //Calculate the eigenvalues of the structure tensor
+                e1 = 0.5 * (trace - Math.sqrt(trace * trace - 4 * determinant));
+                e2 = 0.5 * (trace + Math.sqrt(trace * trace - 4 * determinant));
+
+                //Calculate the R score for the window
+                r_score = Math.min(e1, e2);
                 
                 if (r_score > threshold) {
                     transformed_image = drawSquare(transformed_image, i, j);

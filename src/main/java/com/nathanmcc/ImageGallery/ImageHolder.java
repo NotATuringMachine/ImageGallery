@@ -23,6 +23,7 @@ public class ImageHolder {
     private BufferedImage pixelated_image;
     private BufferedImage sharpened_image;
     private BufferedImage harris_corners;
+    private BufferedImage tomasi_corners;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -216,7 +217,10 @@ public class ImageHolder {
         return sharpened_image;
     }
 
-
+    /**
+     * Applies the Harris Corner Detection algorithm to the image
+     * @return image with corners detected
+     */
     public BufferedImage harrisCorners() {
         if (harris_corners != null)
             return harris_corners;
@@ -226,6 +230,21 @@ public class ImageHolder {
 
         harris_corners = image_processor.detectHarrisCorners(greyscale_image, original_image);
         return harris_corners;
+    }
+
+    /**
+     * Applies the Shi-Tomasi Corner Detection algorithm to the image
+     * @return image with corners detected
+     */
+    public BufferedImage shiTomasiCorners(){
+        if (tomasi_corners != null)
+            return tomasi_corners;
+        
+        if (greyscale_image == null)
+            greyscale_image = image_processor.applyGreyscaleFilter(original_image);
+        
+        tomasi_corners = image_processor.detectShiTomasiCorners(greyscale_image, original_image);
+        return tomasi_corners;
     }
 
 }
