@@ -122,7 +122,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_greyscale = new JMenuItem("Greyscale Filter");
         JMenuItem process_menu_negative = new JMenuItem("Negative Filter");
         JMenuItem process_menu_sepia = new JMenuItem("Sepia Filter");
-        JMenuItem process_menu_false = new JMenuItem("Increase Contrast");
+        JMenuItem process_menu_contrast = new JMenuItem("Increase Contrast");
         JMenuItem process_menu_threshold = new JMenuItem("Binary Image");
         JMenuItem process_menu_boxBlur = new JMenuItem("Box Blur");
         JMenuItem process_menu_gaussianBlur = new JMenuItem("Gaussian Blur");
@@ -134,6 +134,7 @@ public class ImageProcessorApp extends JFrame {
         JMenuItem process_menu_sharpen = new JMenuItem("Sharpen");
         JMenuItem process_menu_harris = new JMenuItem("Harris Corner Detection");
         JMenuItem process_menu_tomasi = new JMenuItem("Shi-Tomasi Corner Detection");
+        JMenuItem process_menu_false = new JMenuItem("False Colour");
 
         //Add Tool tips to ambiguous JMenuItems
         process_menu_blurredSobel.setToolTipText("Applies a Gaussian kernel to the image before the sobel kernel");
@@ -144,7 +145,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_greyscale);
         process_menu.add(process_menu_negative);
         process_menu.add(process_menu_sepia);
-        process_menu.add(process_menu_false);
+        process_menu.add(process_menu_contrast);
         process_menu.add(process_menu_threshold);
         process_menu.add(process_menu_boxBlur);
         process_menu.add(process_menu_gaussianBlur);
@@ -156,6 +157,7 @@ public class ImageProcessorApp extends JFrame {
         process_menu.add(process_menu_sharpen);
         process_menu.add(process_menu_harris);
         process_menu.add(process_menu_tomasi);
+        process_menu.add(process_menu_false);
 
         //Add ActionListeners to each JMenuItem
         process_menu_original.addActionListener (
@@ -200,7 +202,7 @@ public class ImageProcessorApp extends JFrame {
                 }
         );
 
-        process_menu_false.addActionListener(
+        process_menu_contrast.addActionListener(
                 e -> {
                     if (image !=  null) {
                         setDisplayImage(image.applyContrastEnhancement());
@@ -314,6 +316,16 @@ public class ImageProcessorApp extends JFrame {
             e -> {
                 if (image != null) {
                     setDisplayImage(image.shiTomasiCorners());
+                } else {
+                    showDisplayWindow("There is no image loaded.");
+                }
+            }
+        );
+
+        process_menu_false.addActionListener(
+            e -> {
+                if (image != null) {
+                    setDisplayImage(image.falseColour());
                 } else {
                     showDisplayWindow("There is no image loaded.");
                 }

@@ -24,6 +24,7 @@ public class ImageHolder {
     private BufferedImage sharpened_image;
     private BufferedImage harris_corners;
     private BufferedImage tomasi_corners;
+    private BufferedImage false_colour_image;
 
     public ImageHolder(BufferedImage original_image){
         this.original_image = original_image;
@@ -245,6 +246,17 @@ public class ImageHolder {
         
         tomasi_corners = image_processor.detectShiTomasiCorners(greyscale_image, original_image);
         return tomasi_corners;
+    }
+
+    public BufferedImage falseColour() {
+        if (greyscale_image == null) 
+            greyscale_image = image_processor.applyGreyscaleFilter(original_image);
+        
+        if (false_colour_image != null) 
+            return false_colour_image;
+        
+        false_colour_image = image_processor.convertFalseColour(greyscale_image);
+        return false_colour_image;
     }
 
 }

@@ -851,4 +851,51 @@ public class ImageProcessor {
 
         return transformed_image;
     }
+
+
+    /**
+     * Converts greyscale image to false colour using a special color map
+     * @param original_image original image is assumed to be a greyscale image
+     * @return False colour image
+     */
+    public BufferedImage convertFalseColour(BufferedImage original_image) {
+        BufferedImage transformed_image = new BufferedImage(
+                original_image.getWidth(),
+                original_image.getHeight(),
+                original_image.getType());
+        Color c;
+        int greyscale_val;
+        for (int x = 0; x < transformed_image.getWidth(); x++){
+            for (int y = 0; y < transformed_image.getHeight(); y++){
+                // Fetch current pixel's RGB values
+                c = new Color(original_image.getRGB(x, y));
+                greyscale_val = c.getRed();
+                c = getFalseColourMapValue(greyscale_val);
+                transformed_image.setRGB(x, y, c.getRGB());
+            }
+        }
+
+
+        return transformed_image;
+    }
+
+    /**
+     * Map greyscale intensity value to false color RGB values
+     * @param intensity greyscale intensity value
+     * @return False colour mapping
+     */
+    private Color getFalseColourMapValue(int intensity) {
+        double adjusted_intensity = intensity / 255.0; // Adjust intensity to range [0, 1]
+        if (adjusted_intensity >= 0.0 && adjusted_intensity < 0.25){
+            return new Color(0, 0, 128);
+        } else if (adjusted_intensity >= 0.25 && adjusted_intensity < 0.5) {
+            return new Color(0, 255, 0);
+        } else if (adjusted_intensity >= 0.5 && adjusted_intensity < 0.75) {
+            return new Color(255, 255, 0);
+        } else if (adjusted_intensity >= 0.75 && adjusted_intensity < 1.0) {
+            return new Color(255, 128, 0);
+        } else {
+            return new Color(255, 0, 0);
+        }
+    }
 }
