@@ -848,7 +848,6 @@ public class ImageProcessor {
                 }
             }
         }
-
         return transformed_image;
     }
 
@@ -874,8 +873,6 @@ public class ImageProcessor {
                 transformed_image.setRGB(x, y, c.getRGB());
             }
         }
-
-
         return transformed_image;
     }
 

@@ -1,5 +1,5 @@
 ## Image Processor ##
-Application to apply simple image processing techniques to images. Created this to learn more about image processing.
+Application to apply simple image processing techniques to images.
 
 ### To use ###
 Download the latest .jar file from the release tab and move into the directory of the .jar file and run:
