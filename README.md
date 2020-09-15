@@ -9,5 +9,4 @@ java -cp <latest jar file>.jar RunApplication
 ```
 ### Examples ###
 ###### Pixelation ######
-![Original](/demoimages/london.jpg)
-![Pixelated](/demoimages/london_pixelate)
+![Pixelation](/demoimages/london_pixelate.png)
