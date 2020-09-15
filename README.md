@@ -7,4 +7,7 @@ Download the latest .jar file from the release tab and move into the directory o
 ```
 java -cp <latest jar file>.jar RunApplication
 ```
-
+### Examples ###
+###### Pixelation ######
+![Original](/demoimages/london.jpg)
+![Pixelated](/demoimages/london_pixelate)
