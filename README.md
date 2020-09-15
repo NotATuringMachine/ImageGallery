@@ -10,3 +10,9 @@ java -cp <latest jar file>.jar RunApplication
 ### Examples ###
 ###### Pixelation ######
 ![Pixelation](/demoimages/london_pixelate.png)
+
+###### Shi-Tomasi Corner Detection ######
+![Shi-Tomasi](/demoimages/london_shi_tomasi.png)
+
+###### Increase Contrast ######
+![Increase-Contrast](/demoimages/london_inc_contrast.png)
